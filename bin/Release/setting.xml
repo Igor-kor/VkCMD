@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <vkapi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <accesToken>42b34918e3908247f5aa0c1e1bffc136e0b446b725cf904f45d851c2818d5dd3d769e42c94898131e79c0</accesToken>
-  <secret>eb9fef6add57e1d626</secret>
+  <accesToken>f7965d2e031c099239e1620d64c3ec856a765d2131c2c1b200d5e23b903636d682794994ac2e150cc5209</accesToken>
+  <secret>2c2cd41eceda26532f</secret>
   <uid>117766113</uid>
   <computerName>com1:</computerName>
   <timeOut>100</timeOut>
