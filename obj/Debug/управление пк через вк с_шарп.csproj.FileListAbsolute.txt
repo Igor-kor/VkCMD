@@ -1,0 +1,6 @@
+C:\Users\Igor\Desktop\programms\visual studio projects\управление пк через вк с_шарп\управление пк через вк с_шарп\bin\Debug\управление пк через вк с_шарп.exe.config
+C:\Users\Igor\Desktop\programms\visual studio projects\управление пк через вк с_шарп\управление пк через вк с_шарп\obj\Debug\управление пк через вк с_шарп.csprojResolveAssemblyReference.cache
+C:\Users\Igor\Desktop\programms\visual studio projects\управление пк через вк с_шарп\управление пк через вк с_шарп\bin\Debug\управление пк через вк с_шарп.exe
+C:\Users\Igor\Desktop\programms\visual studio projects\управление пк через вк с_шарп\управление пк через вк с_шарп\bin\Debug\управление пк через вк с_шарп.pdb
+C:\Users\Igor\Desktop\programms\visual studio projects\управление пк через вк с_шарп\управление пк через вк с_шарп\obj\Debug\управление пк через вк с_шарп.exe
+C:\Users\Igor\Desktop\programms\visual studio projects\управление пк через вк с_шарп\управление пк через вк с_шарп\obj\Debug\управление пк через вк с_шарп.pdb

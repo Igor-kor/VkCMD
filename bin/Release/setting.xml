@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<vkapi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <accesToken>42b34918e3908247f5aa0c1e1bffc136e0b446b725cf904f45d851c2818d5dd3d769e42c94898131e79c0</accesToken>
+  <secret>eb9fef6add57e1d626</secret>
+  <uid>117766113</uid>
+  <computerName>com1:</computerName>
+  <timeOut>100</timeOut>
+  <GetTimeSleep>5000</GetTimeSleep>
+  <SendTimeSleep>1000</SendTimeSleep>
+  <lenghtMessage>700</lenghtMessage>
+</vkapi> 
