@@ -4,4 +4,9 @@
 =======
 /bin/*
 /obj/*
+<<<<<<< HEAD
 >>>>>>> 0f6c6d63216b7f6cea71b49dd6c846b88132fac6
+=======
+/Properties/*
+App.config
+>>>>>>> 6031255d1ba0ad4e130fb0e0b91617324ea16bdc

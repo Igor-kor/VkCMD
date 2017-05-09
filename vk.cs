@@ -1,106 +1,46 @@
 ﻿using System;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 using System.IO;
 using namevkapi;
+using namesettings;
 
 namespace namevk
 {
     public class vk
     {
-        // Для общения с вк
+        // Для сообщения с вк
         private vkapi start;
-        // Для сериализации vkapi
-        private XmlSerializer formatter;
+
         XmlDocument textResponce = new XmlDocument();
         // Для остановки цикла
         bool breakMainLoop = false;
 
         string command = null;
 
+        Settings setting = new Settings();
         //Передаем из маина аргументы
         public vk(string[] args)
         {
             //инициализируем наш класс и сериализацию для него
-            start = new vkapi();
-            formatter = new XmlSerializer(typeof(vkapi));
+            start = new vkapi(setting);
+
             //если надо то это создаст файл с сериализуемыми полями
             if (args.Length > 0)
             {
                 if (args[0].Equals("xml"))
                 {
-                    createFile();
+                    setting.createFile();
                 }
             }
-            if (readSetting() == false)
+            if (setting.readSetting() == false)
             {
-                createFile();
-                if (readSetting() == false)
+                setting.createFile();
+                if (setting.readSetting() == false)
                 {
                     Console.WriteLine("#ERROR Попытка создать файл настроек не удалась.");
                 }
             }
-        }
-
-        //Создает файл если это необходимо(для первоначальной настройки)
-        private bool createFile()
-        {
-            start.lenghtMessage = 600;
-            start.GetTimeSleep = 5000;
-            start.SendTimeSleep = 1000;
-            start.timeOut = 100;
-            start.accesToken = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-            start.computerName = "com:";
-            start.secret = "xxxxxxxxxxxxxxxxxx";
-            start.uid = "xxxxxxxxx";
-            FileStream fs2 = new FileStream("setting.xml", FileMode.OpenOrCreate);
-            try
-            {
-                formatter.Serialize(fs2, start);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine("#error don't open setting.xml or xml is clear\n#" + ex.Message);
-                return false;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Console.WriteLine("#error Нет прав доступа к файлам, пожалуйста перезапустите программу с правами администратора\n" + ex.Message);
-                return false;
-            }
-            finally
-            {
-                fs2.Close();
-            }
-            Console.WriteLine("XML Файл setting.xml создан");
-            return true;
-        }
-
-        //Считывает настройки vkapi из файла
-        private bool readSetting(string filename = "setting.xml")
-        {
-            //читаем настройки из файла
-            FileStream fs = new FileStream(filename, FileMode.OpenOrCreate);
-            try
-            {
-                start = (vkapi)formatter.Deserialize(fs);
-            }
-            catch (InvalidOperationException ex)
-            {
-                Console.WriteLine("#error don't open setting.xml or xml is clear\n#" + ex.Message);
-                return false;
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Console.WriteLine("#error Нет прав доступа к файлам, пожалуйста перезапустите программу с правами администратора\n" + ex.Message);
-                return false;
-            }
-            finally
-            {
-                fs.Close();
-            }
-            return true;
         }
 
         //Получение последнего сообщения
@@ -110,11 +50,9 @@ namespace namevk
             if (temp.Length < 1)
             {
                 Console.WriteLine("#error Сервер не овечает");
-                System.Threading.Thread.Sleep(start.GetTimeSleep);
+                System.Threading.Thread.Sleep(setting.GetTimeSleep);
                 throw new Exception("Сервер не овечает");
             }
-            // todo обработка присылаемых ошибок
-            //Console.WriteLine(temp);
             return temp;
         }
 
@@ -125,7 +63,7 @@ namespace namevk
             if (elemList.Count <= 0)
             {
                 Console.WriteLine("#error Не удалось прочесть uid, elemList.Count <= 0");
-                System.Threading.Thread.Sleep(start.SendTimeSleep);
+                System.Threading.Thread.Sleep(setting.SendTimeSleep);
                 return false;
             }
             for (int i = 0; i < elemList.Count; i++)
@@ -134,7 +72,7 @@ namespace namevk
                 Console.WriteLine("[отправил:" + tempCommand + "]");
             }
             //если отправил нужный нам человек с юид
-            if (tempCommand.Equals(start.uid))
+            if (tempCommand.Equals(setting.uid))
             {
                 return true;
             }
@@ -148,7 +86,7 @@ namespace namevk
             if (elemList.Count <= 0)
             {
                 Console.WriteLine("#error Не удалось прочесть body, elemList.Count <= 0");
-                System.Threading.Thread.Sleep(start.SendTimeSleep);
+                System.Threading.Thread.Sleep(setting.SendTimeSleep);
                 return false;
             }
             for (int i = 0; i < elemList.Count; i++)
@@ -157,7 +95,7 @@ namespace namevk
                 Console.WriteLine("[сообщение:]" + tempCommand);
             }
             //если это наш компьютер то покинем ожидание выполнения
-            if (tempCommand.StartsWith(start.computerName))
+            if (tempCommand.StartsWith(setting.computerName))
             {
                 command = tempCommand;
                 return true;
@@ -167,7 +105,7 @@ namespace namevk
 
         private string createProccess(string command)
         {
-            string tempCommand = command.Remove(0, start.computerName.Length);
+            string tempCommand = command.Remove(0, setting.computerName.Length);
             string commandCmd = " " + tempCommand + ">test.txt";
             File.WriteAllText(@"command.bat", commandCmd);
             //создаем процесс для запуска батника
@@ -186,7 +124,7 @@ namespace namevk
                 if (temp.Length < 1)
                 {
                     Console.WriteLine("#error Сервер не овечает");
-                    System.Threading.Thread.Sleep(start.GetTimeSleep);
+                    System.Threading.Thread.Sleep(setting.GetTimeSleep);
                     break;
                 }
                 //СЧИТЫВАЕМ ЗНАЧЕНИЕ
@@ -198,7 +136,7 @@ namespace namevk
                     //если это наш компьютер то покинем ожидание выполнения
                     if (parsePC(root))
                     {
-                        tempCommand = tempCommand.Remove(0, start.computerName.Length);
+                        tempCommand = tempCommand.Remove(0, setting.computerName.Length);
                         if (tempCommand.Equals("stop")) break;
                     }
                 }
@@ -223,21 +161,21 @@ namespace namevk
         {
             //======================= это нужно чтобы по частям отсылать сообщения lMessage - длинна сообщения в символах
             int symbolCount = 0;
-            int LenghtMessage = start.lenghtMessage;
+            int LenghtMessage = setting.lenghtMessage;
             //====================================цикл для отправки
             int tempTimeOut = 0;
             string tempStringText = null;
             while (symbolCount < textOut.Length)
             {
                 Console.WriteLine("tempTimeOut = " + tempTimeOut);
-                if (tempTimeOut == start.timeOut)
+                if (tempTimeOut == setting.timeOut)
                 {
                     Console.WriteLine("#error превышен интервал ошибок отправки, отправка будет прервана!");
                     return false;
                 }
-                if (symbolCount + start.lenghtMessage < textOut.Length)
+                if (symbolCount + setting.lenghtMessage < textOut.Length)
                 {
-                    tempStringText = textOut.Substring(symbolCount, start.lenghtMessage);
+                    tempStringText = textOut.Substring(symbolCount, setting.lenghtMessage);
                 }
                 else
                 {
@@ -245,12 +183,12 @@ namespace namevk
                 }
 
                 //отправляем запрос и записываем ответ сервера в temp2
-                string temp2 = start.sendRequest("messages.send.xml?user_id=" + start.uid + "&message=" + tempStringText);
-                LenghtMessage = start.lenghtMessage;
+                string temp2 = start.sendRequest("messages.send.xml?user_id=" + setting.uid + "&message=" + tempStringText);
+                LenghtMessage = setting.lenghtMessage;
                 if (temp2.Length < 1)
                 {
                     Console.WriteLine("#error не получен ответ от сервера");
-                    System.Threading.Thread.Sleep(start.SendTimeSleep);
+                    System.Threading.Thread.Sleep(setting.SendTimeSleep);
                     tempTimeOut++;
                     LenghtMessage = 0;
                     continue;
@@ -268,18 +206,18 @@ namespace namevk
                 //если нет ошибок при отправки
                 if (tempCommand == null)
                 {
-                    LenghtMessage = start.lenghtMessage;
+                    LenghtMessage = setting.lenghtMessage;
                     tempTimeOut = 0;
                 }
                 else
                 {
                     tempTimeOut++;
                     Console.WriteLine("#error отсервера получено сообщение об ошибке:\n" + temp2);
-                    System.Threading.Thread.Sleep(start.SendTimeSleep);
+                    System.Threading.Thread.Sleep(setting.SendTimeSleep);
                     LenghtMessage = 0;
                 }
                 Console.WriteLine("переданно:" + (int)(((float)symbolCount / (float)textOut.Length) * 100) + "%");
-                System.Threading.Thread.Sleep(start.SendTimeSleep);
+                System.Threading.Thread.Sleep(setting.SendTimeSleep);
                 symbolCount += LenghtMessage;
             }
             return true;
@@ -316,10 +254,9 @@ namespace namevk
                 {
                     Console.WriteLine(DateTime.Now);
                     //сделаем задержку между получением сообщения
-                    System.Threading.Thread.Sleep(start.GetTimeSleep);
+                    System.Threading.Thread.Sleep(setting.GetTimeSleep);
                     continue;
                 }
-                //todo переделать в массив uids
                 //если uidсовпадает
                 if (parseUid(root))
                 {
@@ -333,10 +270,8 @@ namespace namevk
                 DateTime localDate = DateTime.Now;
                 Console.WriteLine(localDate);
                 //сделаем задержку между получением сообщения
-                System.Threading.Thread.Sleep(start.GetTimeSleep);
+                System.Threading.Thread.Sleep(setting.GetTimeSleep);
             }
         }
-
-
     }
 }
