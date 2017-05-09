@@ -22,7 +22,7 @@ namespace namevk
         //Передаем из маина аргументы
         public vk(string[] args)
         {
-            //инициализируем наш класс и сериализацию для него
+            //инициализируем наш класс
             start = new vkapi(setting);
 
             //если надо то это создаст файл с сериализуемыми полями
@@ -257,7 +257,7 @@ namespace namevk
                     System.Threading.Thread.Sleep(setting.GetTimeSleep);
                     continue;
                 }
-                //если uidсовпадает
+                //если uid совпадает
                 if (parseUid(root))
                 {
                     //если это наш компьютер то выполняем

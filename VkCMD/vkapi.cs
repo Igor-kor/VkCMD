@@ -62,7 +62,6 @@ namespace namevkapi
             using (MD5 md5Hash = MD5.Create())
             {
                 sig = GetMd5Hash(md5Hash, tempRequest);
-                //Console.WriteLine("sig=" + sig);
             }
             textRequest = "https://api.vk.com/method/" + method + "&access_token=" + setting.accesToken + "&sig=" + sig;
             //костыль, ибо + не конвертирует в %2B для передачи в url, возможно есть еще мешающие символы
@@ -89,7 +88,6 @@ namespace namevkapi
             Stream dataStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(dataStream);
             string responseFromServer = reader.ReadToEnd();
-            //Console.WriteLine(responseFromServer);
             reader.Close();
             response.Close();
             return responseFromServer;
