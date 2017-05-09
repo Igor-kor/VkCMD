@@ -1,4 +1,2 @@
-/bin/*
-/obj/*
-/Properties/*
-App.config
+/VkCMD/bin/*
+/VkCMD/obj/*
