@@ -3,16 +3,14 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 using System.Net;
+using namesettings;
 
 namespace namevkapi
 {
     [Serializable]
     public class vkapi
     {
-        public int timeOut;
-        public int SendTimeSleep;
-        public int GetTimeSleep;
-        public int lenghtMessage;
+        public Settings setting;
         [NonSerialized()]
         private string tempRequest;
         [NonSerialized()]
@@ -23,10 +21,6 @@ namespace namevkapi
         WebResponse response;
         [NonSerialized()]
         private string sig;
-        public string accesToken { get; set; }
-        public string secret { get; set; }
-        public string uid { get; set; }
-        public string computerName { get; set; }
 
         //получение хэша
         static string GetMd5Hash(MD5 md5Hash, string input)
@@ -64,13 +58,13 @@ namespace namevkapi
         //отправка запроса
         public string sendRequest(string method)
         {
-            tempRequest = "/method/" + method + "&access_token=" + accesToken + secret;
+            tempRequest = "/method/" + method + "&access_token=" + setting.accesToken + setting.secret;
             using (MD5 md5Hash = MD5.Create())
             {
                 sig = GetMd5Hash(md5Hash, tempRequest);
                 //Console.WriteLine("sig=" + sig);
             }
-            textRequest = "https://api.vk.com/method/" + method + "&access_token=" + accesToken + "&sig=" + sig;
+            textRequest = "https://api.vk.com/method/" + method + "&access_token=" + setting.accesToken + "&sig=" + sig;
             //костыль, ибо + не конвертирует в %2B для передачи в url, возможно есть еще мешающие символы
             textRequest = textRequest.Replace("+", "%2B");
             request = WebRequest.Create(textRequest);
@@ -101,67 +95,14 @@ namespace namevkapi
             return responseFromServer;
         }
 
-        //ошибки при чтении параметров
-        public bool isRead()
-        {
-            if (accesToken.Length != 85)
-            {
-                Console.WriteLine("#error invalid accesstoken");
-                return false;
-            }
-            if (secret.Length != 18)
-            {
-                Console.WriteLine("#error invalid secret");
-                return false;
-            }
-            if (computerName.Length < 1)
-            {
-                Console.WriteLine("#error invalid computerName, default cmd:");
-                computerName = "cmd:";
-            }
-            if (uid.Length < 1)
-            {
-                Console.WriteLine("#error invalid uid");
-                return false;
-            }
-            if (timeOut < 0)
-            {
-                Console.WriteLine("#error timeOut < 0");
-                timeOut = 100;
-            }
-            if (GetTimeSleep < 0)
-            {
-                Console.WriteLine("#error GetTimeSleep < 0");
-                GetTimeSleep = 5000;
-            }
-            if (SendTimeSleep < 0)
-            {
-                Console.WriteLine("#error SendTimeSleep < 0");
-                SendTimeSleep = 1000;
-            }
-            if (lenghtMessage < 0)
-            {
-                Console.WriteLine("#error lenghtMessage < 0");
-                lenghtMessage = 600;
-            }
-            return true;
-        }
-
         public vkapi()
         {
 
         }
 
-        public vkapi(string _accesToken, string _secret, string _uid, string _computerName, int _timeOut = -1, int _SendTimeSleep = -1, int _GetTimeSleep = -1, int _lenghtMessage = -1)
+        public vkapi(Settings set)
         {
-            lenghtMessage = _lenghtMessage;
-            GetTimeSleep = _GetTimeSleep;
-            SendTimeSleep = _SendTimeSleep;
-            timeOut = _timeOut;
-            accesToken = _accesToken;
-            secret = _secret;
-            uid = _uid;
-            computerName = _computerName;
+            setting = set;
         }
     }
 }
